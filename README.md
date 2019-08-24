@@ -1,2 +1,0 @@
-# RappiChallenge
-Zomate Api implementation
