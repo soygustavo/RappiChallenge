@@ -1,4 +1,4 @@
-package com.suarezgustavo.rappichallenge.data.model.entity
+package com.suarezgustavo.rappichallenge.data.entity
 
 import com.google.gson.annotations.SerializedName
 
@@ -9,6 +9,6 @@ data class Location(
     val city: String,
     val latitude: Double,
     val longitude: Double,
-    val zipcode: Int,
+    val zipcode: String,
     @SerializedName("country_id") val countryId: Int
 )

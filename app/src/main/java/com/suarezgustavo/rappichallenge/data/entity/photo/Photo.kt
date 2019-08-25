@@ -1,6 +1,7 @@
-package com.suarezgustavo.rappichallenge.data.model.entity
+package com.suarezgustavo.rappichallenge.data.entity.photo
 
 import com.google.gson.annotations.SerializedName
+import com.suarezgustavo.rappichallenge.data.entity.User
 
 data class Photo(
 

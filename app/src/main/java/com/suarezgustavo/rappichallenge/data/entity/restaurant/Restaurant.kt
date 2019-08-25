@@ -1,6 +1,10 @@
-package com.suarezgustavo.rappichallenge.data.model.entity
+package com.suarezgustavo.rappichallenge.data.entity.restaurant
 
 import com.google.gson.annotations.SerializedName
+import com.suarezgustavo.rappichallenge.data.entity.Location
+import com.suarezgustavo.rappichallenge.data.entity.UserRating
+import com.suarezgustavo.rappichallenge.data.entity.photo.Photos
+import com.suarezgustavo.rappichallenge.data.entity.review.Reviews
 
 data class Restaurant(
     val id: Int,
@@ -24,6 +28,6 @@ data class Restaurant(
     @SerializedName("all_reviews_count") val allReviewsCount: Int,
     @SerializedName("photo_count") val photoCount: Int,
     @SerializedName("phone_numbers") val phoneNumbers: String,
-    @SerializedName("photos") val photoList: List<Photo>,
-    @SerializedName("all_reviews") val reviewList: List<Review>
+    @SerializedName("photos") val photoList: List<Photos>,
+    @SerializedName("all_reviews") val reviewList: Reviews
 )
