@@ -8,26 +8,64 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 
 apply plugin: "kotlin-kapt"
 
+final MIN_SDK = 21
+final TARGET_SDK = 29
+
+final BUILD_VERSION = 000001
+final APP_VERSION = "0.1" + "." + BUILD_VERSION
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion TARGET_SDK
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.suarezgustavo.rappichallenge"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion MIN_SDK
+        targetSdkVersion TARGET_SDK
+        versionCode BUILD_VERSION
+        versionName APP_VERSION
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions "flavor"
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+
+            def flavor = variant.properties.get('flavorName')
+            def type = variant.buildType.name
+
+            outputFileName = "com.suarezgustavo.rappichallenge_" + APP_VERSION + "-" + flavor + "-" + type + ".apk"
+        }
     }
     buildTypes {
         debug {
             buildConfigField('String', "ZomatoApiKey", RappiChallenge_ZomatoApiKey)
+            buildConfigField('String', "ZomatoBaseUrl", zomato_url_dev)
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField('String', "ZomatoApiKey", RappiChallenge_ZomatoApiKey)
+            buildConfigField('String', "ZomatoBaseUrl", zomato_url_release)
+        }
+    }
+    productFlavors {
+        app_prod {
+            applicationId 'com.suarezgustavo.rappichallenge'
+            minSdkVersion MIN_SDK
+            targetSdkVersion TARGET_SDK
+            versionCode BUILD_VERSION
+            versionName APP_VERSION
+            dimension = "flavor"
+        }
+
+        app_dev {
+            applicationId 'com.suarezgustavo.devrappichallenge'
+            minSdkVersion MIN_SDK
+            targetSdkVersion TARGET_SDK
+            versionCode BUILD_VERSION
+            versionName APP_VERSION
+            dimension = "flavor"
         }
     }
 }

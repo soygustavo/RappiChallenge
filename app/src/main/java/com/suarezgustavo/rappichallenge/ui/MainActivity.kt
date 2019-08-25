@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main) {
             this.coroutineContext
-//            val searchResponse = apiService.getSearchResult(3).await()
-//            val categories = apiService.getCategories().await()
+//            val searchResponse = apiService.getSearchResultAsync(3).await()
+//            val categories = apiService.getCategoriesAsync().await()
             dataSource.fetchCategories()
         }
     }
