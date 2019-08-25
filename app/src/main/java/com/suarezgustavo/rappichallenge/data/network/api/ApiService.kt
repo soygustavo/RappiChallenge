@@ -13,21 +13,30 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-//https://developers.zomato.com/api/v2.1/search?q=italian&start=0&count=10
 interface ApiService {
 
-    @GET("search")
-    fun getSearchResult(
+    @GET(END_POINT_SEARCH)
+    fun getSearchResultAsync(
         @Query("category") idCategory: Int,
         @Query("start") start: Int = 5,
         @Query("count") count: Int = 1
     ): Deferred<SearchResult>
 
-    @GET("categories")
-    fun getCategories(): Deferred<Categories>
+    @GET(END_POINT_CATEGORIES)
+    fun getCategoriesAsync(): Deferred<Categories>
 
     companion object {
+
+        //== ENDPOINTS
+        const val END_POINT_SEARCH = "search"
+        const val END_POINT_CATEGORIES = "categories"
+
+        //== HEADERS
+        private const val HEADER_USER_KEY = "user-key"
+
+
         operator fun invoke(connectivityInterceptor: ConectivityInterceptor): ApiService {
+
             val requestInterceptor = Interceptor { chain ->
                 val url = chain.request()
                     .url()
@@ -35,7 +44,7 @@ interface ApiService {
                     .build()
                 val request = chain.request()
                     .newBuilder()
-                    .addHeader("user-key", BuildConfig.ZomatoApiKey)
+                    .addHeader(HEADER_USER_KEY, BuildConfig.ZomatoApiKey)
                     .url(url)
                     .build()
 
@@ -49,7 +58,7 @@ interface ApiService {
 
             return Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl("https://developers.zomato.com/api/v2.1/")
+                .baseUrl(BuildConfig.ZomatoBaseUrl)
                 .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

@@ -22,7 +22,7 @@ class DataSourceImpl(private val apiService: ApiService) : DataSource {
     override suspend fun fetchSearchResult(idCategory: Int, start: Int) {
         try {
             val fetchedData = apiService
-                .getSearchResult(idCategory, start)
+                .getSearchResultAsync(idCategory, start)
                 .await()
             mSearchResult.postValue(fetchedData)
         } catch (e: NoConnectivityException) {
@@ -33,7 +33,7 @@ class DataSourceImpl(private val apiService: ApiService) : DataSource {
     override suspend fun fetchCategories() {
         try {
             val fetchedData = apiService
-                .getCategories()
+                .getCategoriesAsync()
                 .await()
             mCategories.postValue(fetchedData)
         } catch (e: NoConnectivityException) {
