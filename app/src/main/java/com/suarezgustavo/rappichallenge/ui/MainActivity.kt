@@ -1,7 +1,8 @@
-package com.suarezgustavo.rappichallenge
+package com.suarezgustavo.rappichallenge.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.suarezgustavo.rappichallenge.R
 
 class MainActivity : AppCompatActivity() {
 
