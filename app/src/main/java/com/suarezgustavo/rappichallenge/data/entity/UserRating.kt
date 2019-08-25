@@ -1,4 +1,4 @@
-package com.suarezgustavo.rappichallenge.data.model.entity
+package com.suarezgustavo.rappichallenge.data.entity
 
 import com.google.gson.annotations.SerializedName
 
