@@ -8,7 +8,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 
 apply plugin: "kotlin-kapt"
 
-final MIN_SDK = 21
+final MIN_SDK = 26
 final TARGET_SDK = 29
 
 final BUILD_VERSION = 000001
