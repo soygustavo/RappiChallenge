@@ -19,7 +19,10 @@ interface ApiService {
     fun getSearchResultAsync(
         @Query("category") idCategory: Int,
         @Query("start") start: Int = 5,
-        @Query("count") count: Int = 1
+        @Query("count") count: Int = 1,
+        @Query("sort") sort: String = "rating",
+        @Query("lat") lat: Double = 38.9072,
+        @Query("lon") lon: Double = 77.0369
     ): Deferred<SearchResult>
 
     @GET(END_POINT_CATEGORIES)

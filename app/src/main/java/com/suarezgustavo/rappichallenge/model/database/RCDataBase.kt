@@ -5,12 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.suarezgustavo.rappichallenge.model.dao.CategoryDAO
+import com.suarezgustavo.rappichallenge.model.dao.RestaurantDAO
 import com.suarezgustavo.rappichallenge.model.entity.Category
+import com.suarezgustavo.rappichallenge.model.entity.Restaurant
 
-@Database(entities = [Category::class], version = 1)
+@Database(entities = [Category::class, Restaurant::class], version = 1)
 abstract class RCDataBase : RoomDatabase() {
 
     abstract fun categoryDAO(): CategoryDAO
+    abstract fun restaurantDAO(): RestaurantDAO
 
     companion object {
         private var instance: RCDataBase? = null
