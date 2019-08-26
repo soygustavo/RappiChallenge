@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Rappi Challenge</string>
+    <string name="title_activity_category">"Spin and eat"</string>
 </resources>
