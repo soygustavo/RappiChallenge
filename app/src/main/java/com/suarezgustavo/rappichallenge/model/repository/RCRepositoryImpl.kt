@@ -2,9 +2,12 @@ package com.suarezgustavo.rappichallenge.model.repository
 
 import androidx.lifecycle.LiveData
 import com.suarezgustavo.rappichallenge.model.dao.CategoryDAO
+import com.suarezgustavo.rappichallenge.model.dao.RestaurantDAO
 import com.suarezgustavo.rappichallenge.model.entity.Category
+import com.suarezgustavo.rappichallenge.model.entity.Restaurant
 import com.suarezgustavo.rappichallenge.model.network.DataSourceImpl
 import com.suarezgustavo.rappichallenge.model.network.response.category.ItemCategory
+import com.suarezgustavo.rappichallenge.model.network.response.restaurant.Restaurants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,6 +16,7 @@ import java.time.ZonedDateTime
 
 class RCRepositoryImpl(
     private val categoryDAO: CategoryDAO,
+    private val restaurantDAO: RestaurantDAO,
     private val dataSourceImpl: DataSourceImpl
 ) : RCRepository {
 
@@ -20,23 +24,33 @@ class RCRepositoryImpl(
 
         private const val cacheTime = 30L
         private var cacheDuration = ZonedDateTime.now().plusMinutes(cacheTime)
+        private var currentFetchTime = ZonedDateTime.now().plusMinutes(cacheTime + 1)
     }
 
     init {
         dataSourceImpl.categories.observeForever { newListCategories ->
             persistFetchedCategories(newListCategories.categories)
         }
-    }
-
-    override suspend fun getAllCategories(): LiveData<List<Category>>? {
-        return withContext(Dispatchers.IO) {
-            when (isValidCache(ZonedDateTime.now())) {
-                true -> return@withContext categoryDAO.getAllCategories()
-                false -> return@withContext null
-            }
-
+        dataSourceImpl.searchResult.observeForever { newListSearchResult ->
+            persistFetchedRestaurants(newListSearchResult.restaurantList)
         }
     }
+
+
+    override suspend fun getAllCategories(): LiveData<List<Category>> {
+        initCategoryData()
+        return withContext(Dispatchers.IO) {
+            return@withContext categoryDAO.getAllCategories()
+        }
+    }
+
+    override suspend fun getRandomRestaurant(idCategory: Int): LiveData<Restaurant> {
+        fetchRandomRestaurantFromCategory(idCategory)
+        return withContext(Dispatchers.IO) {
+            return@withContext restaurantDAO.getLast()
+        }
+    }
+
 
     private fun persistFetchedCategories(fetchedCategories: List<ItemCategory>) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -46,10 +60,19 @@ class RCRepositoryImpl(
         }
     }
 
+    private fun persistFetchedRestaurants(restaurantList: List<Restaurants>) {
+        GlobalScope.launch(Dispatchers.IO) {
+            for (item in restaurantList) {
+                restaurantDAO.insertUpdate(item.restaurant)
+            }
+        }
+    }
+
 
     private suspend fun initCategoryData() {
-        if (getAllCategories() == null) {
+        if (!isValidCache(currentFetchTime)) {
             fetchCategories()
+            cacheDuration = ZonedDateTime.now()
         }
     }
 
@@ -57,19 +80,19 @@ class RCRepositoryImpl(
         dataSourceImpl.fetchCategories()
     }
 
+    private suspend fun fetchRandomRestaurantFromCategory(idCategory: Int) {
+        val rndNumber = (0..99).random()
+        dataSourceImpl.fetchSearchResult(idCategory, rndNumber)
+    }
+
     private fun isValidCache(fetchTime: ZonedDateTime): Boolean {
         when (fetchTime.isBefore(cacheDuration)) {
             true -> return true
             false -> {
+                currentFetchTime = ZonedDateTime.now()
                 cacheDuration = ZonedDateTime.now().plusMinutes(cacheTime)
                 return false
             }
         }
-//        if (fetchTime.isBefore(cacheDuration)) {
-//            return true
-//        } else {
-//            cacheDuration = ZonedDateTime.now().plusMinutes(cacheTime)
-//            return false
-//        }
     }
 }
