@@ -70,21 +70,30 @@ class ChooserActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setupUI() {
+        var value: String? = ""
 
         number_picker_string.setOnScrollListener { numberPicker, scrollState ->
             if (scrollState === NumberPicker.OnScrollListener.SCROLL_STATE_IDLE) {
+                var newValue = categoriesArray[numberPicker.value]
+
                 val r = Runnable {
-                    val intent = Intent(this@ChooserActivity, RestaurantActivity::class.java)
-                    intent.putExtra(
-                        "keyIdentifier",
-                        categoryTable[categoriesArray[numberPicker.value]]
-                    )
-                    startActivity(intent)
+                    value = categoriesArray[numberPicker.value]
+                    if (value === newValue) {
+
+                        numberPicker.visibility = View.GONE
+                        txt_test.visibility = View.VISIBLE
+                        txt_test.text = categoriesArray[numberPicker.value]
+
+                        val intent = Intent(this@ChooserActivity, RestaurantActivity::class.java)
+                        intent.putExtra(
+                            "keyIdentifier",
+                            categoryTable[categoriesArray[numberPicker.value]]
+                        )
+                        startActivity(intent)
+                    }
                 }
                 Handler().postDelayed(r, 1000)
-                numberPicker.visibility = View.GONE
-                txt_test.visibility = View.VISIBLE
-                txt_test.text = categoriesArray[numberPicker.value]
+
             }
         }
     }
